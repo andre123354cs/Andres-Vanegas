@@ -8,6 +8,8 @@ st.image(imagen_perfil, width=250)
 st.title("Andrés Vanegas")
 st.subheader("Técnico en Sistemas | Administrador de Empresas")
 
+st.subheader("Coordinador de Inteligencia Empresarial. | Extracción de datos, Preprocesamiento, Modelado, Algoritmos, Aprendizaje automático, Clasificación, Agrupamiento, Análisis de patrones, Minería de texto Y Visualización de datos.")
+
 st.write("Soy Andrés Vanegas, un apasionado por la tecnología y la administración. Actualmente me encuentro cursando el quinto semestre de Administración de Empresas y soy técnico en sistemas con énfasis en desarrollo.")
 
 # Habilidades
