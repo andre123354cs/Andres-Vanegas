@@ -13,13 +13,7 @@ st.subheader("Mail | Edwar.vaco@gmail.com")
 st.write("Coordinador de Inteligencia Empresarial. | Extracción de datos, Preprocesamiento, Modelado, Algoritmos, Aprendizaje automático, Clasificación, Agrupamiento, Análisis de patrones, Minería de texto Y Visualización de datos.")
 st.write("________________________________________________________________________________________________")
 
-st.markdown("Técnico altamente capacitado en el análisis de datos y la optimización de procesos,
-con una sólida experiencia en el sector aeronáutico y el transporte aéreo de carga.
-Con más de dos años de experiencia, he demostrado habilidades excepcionales en
-la recopilación, análisis e interpretación de datos para impulsar la toma de
-decisiones estratégicas y mejorar la eficiencia operativa. Recientemente, me he
-inclinado como coordinador BI sobre negocios de cartera, optimizando la gestión y
-análisis de portafolios para maximizar su rendimiento")
+st.markdown("Técnico altamente capacitado en el análisis de datos y la optimización de procesos, con una sólida experiencia en el sector aeronáutico y el transporte aéreo de carga. Con más de dos años de experiencia, he demostrado habilidades excepcionales en la recopilación, análisis e interpretación de datos para impulsar la toma de decisiones estratégicas y mejorar la eficiencia operativa. Recientemente, me he inclinado como coordinador BI sobre negocios de cartera, optimizando la gestión y análisis de portafolios para maximizar su rendimiento")
 
 # Habilidades
 st.header("Habilidades")
