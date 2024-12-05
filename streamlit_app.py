@@ -7,11 +7,19 @@ imagen_perfil = "https://media.licdn.com/dms/image/v2/D4E03AQEJOCsUNzF9rw/profil
 st.image(imagen_perfil, width=250)
 st.title("Andrés Vanegas")
 st.subheader("Técnico en Sistemas | Administrador de Empresas")
+st.subheader("Telefono | 3145594483")
+st.subheader("Mail | Edwar.vaco@gmail.com")
 
 st.write("Coordinador de Inteligencia Empresarial. | Extracción de datos, Preprocesamiento, Modelado, Algoritmos, Aprendizaje automático, Clasificación, Agrupamiento, Análisis de patrones, Minería de texto Y Visualización de datos.")
 st.write("________________________________________________________________________________________________")
 
-st.write("Soy Andrés Vanegas, un apasionado por la tecnología y la administración. Actualmente me encuentro cursando el quinto semestre de Administración de Empresas y soy técnico en sistemas con énfasis en desarrollo.")
+st.write("Técnico altamente capacitado en el análisis de datos y la optimización de procesos,
+con una sólida experiencia en el sector aeronáutico y el transporte aéreo de carga.
+Con más de dos años de experiencia, he demostrado habilidades excepcionales en
+la recopilación, análisis e interpretación de datos para impulsar la toma de
+decisiones estratégicas y mejorar la eficiencia operativa. Recientemente, me he
+inclinado como coordinador BI sobre negocios de cartera, optimizando la gestión y
+análisis de portafolios para maximizar su rendimiento.")
 
 # Habilidades
 st.header("Habilidades")
