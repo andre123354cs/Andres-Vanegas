@@ -7,8 +7,8 @@ imagen_perfil = "https://media.licdn.com/dms/image/v2/D4E03AQEJOCsUNzF9rw/profil
 st.image(imagen_perfil, width=250)
 st.title("Andrés Vanegas")
 st.subheader("Técnico en Sistemas | Administrador de Empresas")
-st.subheader("Telefono | 3145594483")
-st.subheader("Mail | Edwar.vaco@gmail.com")
+st.write("Telefono | 3145594483")
+st.write("Mail | Edwar.vaco@gmail.com")
 
 st.write("Coordinador de Inteligencia Empresarial. | Extracción de datos, Preprocesamiento, Modelado, Algoritmos, Aprendizaje automático, Clasificación, Agrupamiento, Análisis de patrones, Minería de texto Y Visualización de datos.")
 st.write("________________________________________________________________________________________________")
