@@ -33,23 +33,36 @@ dfDatos[['Latitud', 'Longitud']] = dfDatos['LOCALIZACION'].str.split(',', expand
 dfDatos['Latitud'] = dfDatos['Latitud'].astype(float)
 dfDatos['Longitud'] = dfDatos['Longitud'].astype(float)
 
-# Crear el gráfico de mapa con Plotly
-fig = px.scatter_mapbox(
-    dfDatos, 
-    lat="Latitud", 
-    lon="Longitud", 
-    hover_name="FUNCIONARIO", 
-    hover_data=["LOCALIZACION"],
-    color="FUNCIONARIO",  # Diferentes colores para diferentes personas
-    zoom=8,  # Zoom al mapa para ver un par de cuadras
-    height=600
-)
+# Crear una selección de persona
+persona_seleccionada = st.selectbox('Selecciona una persona', dfDatos['FUNCIONARIO'].unique())
 
-fig.update_layout(mapbox_style="carto-positron")  # Estilo de mapa más sencillo
-fig.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
+# Filtrar los datos para la persona seleccionada
+df_filtrado = dfDatos[dfDatos['FUNCIONARIO'] == persona_seleccionada]
 
-# Mostrar el gráfico en Streamlit
-st.plotly_chart(fig)
+# Si no hay datos, evitar el siguiente paso
+if not df_filtrado.empty:
+    # Crear el gráfico de mapa con Plotly
+    fig = px.scatter_mapbox(
+        df_filtrado, 
+        lat="Latitud", 
+        lon="Longitud", 
+        hover_name="FUNCIONARIO", 
+        hover_data=["LOCALIZACION"],
+        color="FUNCIONARIO",  # Diferentes colores para diferentes personas
+        zoom=18,  # Zoom al mapa para ver un par de cuadras
+        height=600
+    )
+
+    fig.update_layout(mapbox_style="carto-positron",  # Estilo de mapa más sencillo
+                      mapbox_zoom=18,  # Zoom más cercano
+                      mapbox_center={"lat": df_filtrado['Latitud'].mean(), "lon": df_filtrado['Longitud'].mean()},  # Centrar en la ubicación media
+                      margin={"r":0,"t":0,"l":0,"b":0},
+                      paper_bgcolor="white")
+
+    # Mostrar el gráfico en Streamlit
+    st.plotly_chart(fig)
+else:
+    st.write("No hay datos disponibles para la persona seleccionada.")
 
 # Mostrar el DataFrame en Streamlit
 st.dataframe(dfDatos)
