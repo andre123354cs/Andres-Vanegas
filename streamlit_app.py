@@ -39,14 +39,14 @@ fig = px.scatter_mapbox(
     dfDatos, 
     lat="Latitud", 
     lon="Longitud", 
-    hover_name="FUNCIONARIO", # Asegúrate de ajustar el nombre de la columna a la que corresponda
+    hover_name="FUNCIONARIO", 
     hover_data=["LOCALIZACION"],
-    color_discrete_sequence=["red"],
-    zoom=10,
+    color="FUNCIONARIO",  # Diferentes colores para diferentes personas
+    zoom=12,  # Zoom al mapa para ver más de cerca
     height=600
 )
 
-fig.update_layout(mapbox_style="open-street-map")
+fig.update_layout(mapbox_style="carto-positron")  # Estilo de mapa más sencillo
 fig.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
 
 # Mostrar el gráfico en Streamlit
@@ -54,3 +54,5 @@ st.plotly_chart(fig)
 
 # Mostrar el DataFrame en Streamlit
 st.dataframe(dfDatos)
+
+
