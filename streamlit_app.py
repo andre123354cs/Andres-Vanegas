@@ -42,7 +42,7 @@ fig = px.scatter_mapbox(
     hover_name="FUNCIONARIO", 
     hover_data=["LOCALIZACION"],
     color="FUNCIONARIO",  # Diferentes colores para diferentes personas
-    zoom=12,  # Zoom al mapa para ver más de cerca
+    zoom=15,  # Zoom al mapa para ver más de cerca
     height=600
 )
 
@@ -54,5 +54,3 @@ st.plotly_chart(fig)
 
 # Mostrar el DataFrame en Streamlit
 st.dataframe(dfDatos)
-
-
