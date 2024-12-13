@@ -44,14 +44,14 @@ else:
     df_filtrado = dfDatos
 
 # Añadir filtro por fecha
-fecha_min = dfDatos['FECHA VALIDADA'].min()
-fecha_max = dfDatos['FECHA VALIDADA'].max()
+fecha_min = dfDatos['FECHA Y HORA'].min()
+fecha_max = dfDatos['FECHA Y HORA'].max()
 fecha_inicio = st.date_input('Fecha de inicio', fecha_min)
 fecha_fin = st.date_input('Fecha de fin', fecha_max)
 
 # Filtrar datos por rango de fechas
-df_filtrado = df_filtrado[(df_filtrado['FECHA VALIDADA'] >= pd.to_datetime(fecha_inicio)) & 
-                          (df_filtrado['FECHA VALIDADA'] <= pd.to_datetime(fecha_fin))]
+df_filtrado = df_filtrado[(df_filtrado['FECHA Y HORA'] >= pd.to_datetime(fecha_inicio)) & 
+                          (df_filtrado['FECHA Y HORA'] <= pd.to_datetime(fecha_fin))]
 
 # Si no hay datos, evitar el siguiente paso
 if not df_filtrado.empty:
