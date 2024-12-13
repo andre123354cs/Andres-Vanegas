@@ -43,6 +43,16 @@ if persona_seleccionada != 'Todos':
 else:
     df_filtrado = dfDatos
 
+# Añadir filtro por fecha
+fecha_min = dfDatos['FECHA VALIDADA'].min()
+fecha_max = dfDatos['FECHA VALIDADA'].max()
+fecha_inicio = st.date_input('Fecha de inicio', fecha_min)
+fecha_fin = st.date_input('Fecha de fin', fecha_max)
+
+# Filtrar datos por rango de fechas
+df_filtrado = df_filtrado[(df_filtrado['FECHA VALIDADA'] >= pd.to_datetime(fecha_inicio)) & 
+                          (df_filtrado['FECHA VALIDADA'] <= pd.to_datetime(fecha_fin))]
+
 # Si no hay datos, evitar el siguiente paso
 if not df_filtrado.empty:
     # Crear el gráfico de mapa con Plotly
@@ -53,19 +63,20 @@ if not df_filtrado.empty:
         hover_name="FUNCIONARIO", 
         hover_data=["LOCALIZACION"],
         color="FUNCIONARIO",  # Diferentes colores para diferentes personas
-        zoom=18,  # Zoom al mapa para ver un par de cuadras
+        zoom=15,  # Zoom al mapa para ver un par de cuadras
         height=600
     )
 
-    fig.update_layout(mapbox_style="white-bg",  # Estilo de mapa más sencillo y blanco
-                      mapbox_zoom=18,  # Zoom más cercano
+    fig.update_layout(mapbox_style="carto-positron",  # Estilo de mapa más sencillo
+                      mapbox_zoom=15,  # Zoom más cercano
                       mapbox_center={"lat": df_filtrado['Latitud'].mean(), "lon": df_filtrado['Longitud'].mean()},  # Centrar en la ubicación media
-                      margin={"r":0,"t":0,"l":0,"b":0})
+                      margin={"r":0,"t":0,"l":0,"b":0},
+                      paper_bgcolor="white")
 
     # Mostrar el gráfico en Streamlit
     st.plotly_chart(fig)
 else:
-    st.write("No hay datos disponibles para la persona seleccionada.")
+    st.write("No hay datos disponibles para la persona y rango de fechas seleccionados.")
 
 # Mostrar el DataFrame en Streamlit
 st.dataframe(dfDatos)
