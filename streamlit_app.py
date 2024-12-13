@@ -25,3 +25,9 @@ sheetod = '0'
 url = f'https://docs.google.com/spreadsheets/d/{gsheetid}/export?format=csv&gid={sheetod}&format'
 
 dfDatos = pd.read_csv(url)
+
+# Mostrar el DataFrame
+st.dataframe(dfDatos)
+
+# O puedes usar st.table para una visualización más simple
+# st.table(dfDatos)
