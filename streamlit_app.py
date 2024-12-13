@@ -41,7 +41,7 @@ fig = px.scatter_mapbox(
     hover_name="FUNCIONARIO", 
     hover_data=["LOCALIZACION"],
     color="FUNCIONARIO",  # Diferentes colores para diferentes personas
-    zoom=15,  # Zoom al mapa para ver un par de cuadras
+    zoom=12,  # Zoom al mapa para ver un par de cuadras
     height=600
 )
 
