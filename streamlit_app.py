@@ -69,4 +69,4 @@ else:
     st.write("No hay datos disponibles para la fecha seleccionada.")
 
 # Mostrar el DataFrame en Streamlit
-st.dataframe(dfDatos)
+st.dataframe(dfDatos, use_container_width=True)
