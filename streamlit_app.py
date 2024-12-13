@@ -34,18 +34,14 @@ dfDatos[['Latitud', 'Longitud']] = dfDatos['LOCALIZACION'].str.split(',', expand
 dfDatos['Latitud'] = dfDatos['Latitud'].astype(float)
 dfDatos['Longitud'] = dfDatos['Longitud'].astype(float)
 
-
-
 # Añadir filtro por fecha
 dfDatos['FECHA Y HORA'] = pd.to_datetime(dfDatos['FECHA Y HORA'])
 fecha_min = dfDatos['FECHA Y HORA'].min().date()
 fecha_max = dfDatos['FECHA Y HORA'].max().date()
-fecha_inicio = st.date_input('Fecha de inicio', fecha_min)
-fecha_fin = st.date_input('Fecha de fin', fecha_max)
+fecha_seleccionada = st.date_input('Fecha', fecha_min)
 
-# Filtrar datos por rango de fechas
-df_filtrado = df_filtrado[(df_filtrado['FECHA Y HORA'] >= pd.to_datetime(fecha_inicio)) & 
-                          (df_filtrado['FECHA Y HORA'] <= pd.to_datetime(fecha_fin))]
+# Filtrar datos por fecha seleccionada
+df_filtrado = dfDatos[dfDatos['FECHA Y HORA'].dt.date == fecha_seleccionada]
 
 # Si no hay datos, evitar el siguiente paso
 if not df_filtrado.empty:
@@ -70,8 +66,7 @@ if not df_filtrado.empty:
     # Mostrar el gráfico en Streamlit
     st.plotly_chart(fig)
 else:
-    st.write("No hay datos disponibles para la persona y rango de fechas seleccionados.")
+    st.write("No hay datos disponibles para la fecha seleccionada.")
 
 # Mostrar el DataFrame en Streamlit
-st.dataframe(dfDatos, use_container_width=True)
-
+st.dataframe(dfDatos)
