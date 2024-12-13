@@ -33,11 +33,15 @@ dfDatos[['Latitud', 'Longitud']] = dfDatos['LOCALIZACION'].str.split(',', expand
 dfDatos['Latitud'] = dfDatos['Latitud'].astype(float)
 dfDatos['Longitud'] = dfDatos['Longitud'].astype(float)
 
-# Crear una selección de persona
-persona_seleccionada = st.selectbox('Selecciona una persona', dfDatos['FUNCIONARIO'].unique())
+# Crear una selección de persona con opción "Todos"
+opciones_persona = ['Todos'] + dfDatos['FUNCIONARIO'].unique().tolist()
+persona_seleccionada = st.selectbox('Selecciona una persona', opciones_persona)
 
-# Filtrar los datos para la persona seleccionada
-df_filtrado = dfDatos[dfDatos['FUNCIONARIO'] == persona_seleccionada]
+# Filtrar los datos para la persona seleccionada o mostrar todos
+if persona_seleccionada != 'Todos':
+    df_filtrado = dfDatos[dfDatos['FUNCIONARIO'] == persona_seleccionada]
+else:
+    df_filtrado = dfDatos
 
 # Si no hay datos, evitar el siguiente paso
 if not df_filtrado.empty:
@@ -53,11 +57,10 @@ if not df_filtrado.empty:
         height=600
     )
 
-    fig.update_layout(mapbox_style="carto-positron",  # Estilo de mapa más sencillo
+    fig.update_layout(mapbox_style="white-bg",  # Estilo de mapa más sencillo y blanco
                       mapbox_zoom=18,  # Zoom más cercano
                       mapbox_center={"lat": df_filtrado['Latitud'].mean(), "lon": df_filtrado['Longitud'].mean()},  # Centrar en la ubicación media
-                      margin={"r":0,"t":0,"l":0,"b":0},
-                      paper_bgcolor="white")
+                      margin={"r":0,"t":0,"l":0,"b":0})
 
     # Mostrar el gráfico en Streamlit
     st.plotly_chart(fig)
