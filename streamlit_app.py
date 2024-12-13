@@ -2,9 +2,10 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 
+# Configurar la página de Streamlit
 st.set_page_config(
-    page_title="MetaData",
-    page_icon=":chart_with_upwards_trend:",
+    page_title="Ubicaciones en Bogotá",
+    page_icon=":round_pushpin:",
     layout="wide",
     initial_sidebar_state="collapsed"
 )
@@ -20,14 +21,33 @@ st.markdown("""
     <h1 style='text-align: left; color: #0f0a68; font-size: 15px;'>Transparencia y claridad en cada paso. Conoce el estado de tus solicitudes y mantente informado sobre los procesos de RRHH. ¡Tu tranquilidad es nuestra prioridad!</h1>
     """, unsafe_allow_html=True)
 
+# Cargar los datos desde Google Sheets
 gsheetid = '115uUjA9zzHSsfwoSC3mt5VM4E3Abg3jZcQwKQ2zrDzY'
 sheetod = '0'
 url = f'https://docs.google.com/spreadsheets/d/{gsheetid}/export?format=csv&gid={sheetod}&format'
 
 dfDatos = pd.read_csv(url)
 
-# Mostrar el DataFrame
-st.dataframe(dfDatos)
+# Supongamos que la columna de localización está en el formato "latitud, longitud"
+# Separar las coordenadas de latitud y longitud
+dfDatos[['Latitud', 'Longitud']] = dfDatos['localización'].str.split(',', expand=True)
+dfDatos['Latitud'] = dfDatos['Latitud'].astype(float)
+dfDatos['Longitud'] = dfDatos['Longitud'].astype(float)
 
-# O puedes usar st.table para una visualización más simple
-# st.table(dfDatos)
+# Crear el gráfico de mapa con Plotly
+fig = px.scatter_mapbox(
+    dfDatos, 
+    lat="Latitud", 
+    lon="Longitud", 
+    hover_name="Nombre Cliente", # Asegúrate de ajustar el nombre de la columna a la que corresponda
+    hover_data=["localización"],
+    color_discrete_sequence=["red"],
+    zoom=10,
+    height=600
+)
+
+fig.update_layout(mapbox_style="open-street-map")
+fig.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
+
+# Mostrar el gráfico en Streamlit
+st.plotly_chart(fig)
