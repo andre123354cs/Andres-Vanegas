@@ -81,4 +81,5 @@ else:
     st.write("No hay datos disponibles para la persona y rango de fechas seleccionados.")
 
 # Mostrar el DataFrame en Streamlit
-st.dataframe(dfDatos)
+st.dataframe(dfDatos, use_container_width=True)
+
