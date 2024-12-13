@@ -20,7 +20,7 @@ st.markdown("""
     <h1 style='text-align: left; color: #0f0a68; font-size: 15px;'>Transparencia y claridad en cada paso. Conoce el estado de tus solicitudes y mantente informado sobre los procesos de RRHH. ¡Tu tranquilidad es nuestra prioridad!</h1>
     """, unsafe_allow_html=True)
 
-gsheetid = '14NM6hoF3dg-Veq7w1OBZEwH0B1w9kq8mxt07-apSBIc'
+gsheetid = '115uUjA9zzHSsfwoSC3mt5VM4E3Abg3jZcQwKQ2zrDzY'
 sheetod = '0'
 url = f'https://docs.google.com/spreadsheets/d/{gsheetid}/export?format=csv&gid={sheetod}&format'
 
