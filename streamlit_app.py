@@ -34,15 +34,7 @@ dfDatos[['Latitud', 'Longitud']] = dfDatos['LOCALIZACION'].str.split(',', expand
 dfDatos['Latitud'] = dfDatos['Latitud'].astype(float)
 dfDatos['Longitud'] = dfDatos['Longitud'].astype(float)
 
-# Crear una selección de persona con opción "Todos"
-opciones_persona = ['Todos'] + dfDatos['FUNCIONARIO'].unique().tolist()
-persona_seleccionada = st.selectbox('Selecciona una persona', opciones_persona)
 
-# Filtrar los datos para la persona seleccionada o mostrar todos
-if persona_seleccionada != 'Todos':
-    df_filtrado = dfDatos[dfDatos['FUNCIONARIO'] == persona_seleccionada]
-else:
-    df_filtrado = dfDatos
 
 # Añadir filtro por fecha
 dfDatos['FECHA Y HORA'] = pd.to_datetime(dfDatos['FECHA Y HORA'])
