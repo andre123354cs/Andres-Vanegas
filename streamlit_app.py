@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
+from datetime import datetime
 
 st.set_page_config(
     page_title="Plataforma de Seguimiento GPS y Registro de Actividades",
@@ -44,8 +45,9 @@ else:
     df_filtrado = dfDatos
 
 # Añadir filtro por fecha
-fecha_min = dfDatos['FECHA Y HORA'].min()
-fecha_max = dfDatos['FECHA Y HORA'].max()
+dfDatos['FECHA Y HORA'] = pd.to_datetime(dfDatos['FECHA Y HORA'])
+fecha_min = dfDatos['FECHA Y HORA'].min().date()
+fecha_max = dfDatos['FECHA Y HORA'].max().date()
 fecha_inicio = st.date_input('Fecha de inicio', fecha_min)
 fecha_fin = st.date_input('Fecha de fin', fecha_max)
 
