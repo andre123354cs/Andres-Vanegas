@@ -30,7 +30,7 @@ dfDatos = pd.read_csv(url)
 
 # Supongamos que la columna de localización está en el formato "latitud, longitud"
 # Separar las coordenadas de latitud y longitud
-dfDatos[['Latitud', 'Longitud']] = dfDatos['localización'].str.split(',', expand=True)
+dfDatos[['Latitud', 'Longitud']] = dfDatos['LOCALIZACION'].str.split(',', expand=True)
 dfDatos['Latitud'] = dfDatos['Latitud'].astype(float)
 dfDatos['Longitud'] = dfDatos['Longitud'].astype(float)
 
@@ -40,7 +40,7 @@ fig = px.scatter_mapbox(
     lat="Latitud", 
     lon="Longitud", 
     hover_name="Nombre Cliente", # Asegúrate de ajustar el nombre de la columna a la que corresponda
-    hover_data=["localización"],
+    hover_data=["LOCALIZACION"],
     color_discrete_sequence=["red"],
     zoom=10,
     height=600
