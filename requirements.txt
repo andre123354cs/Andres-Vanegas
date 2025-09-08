@@ -1,5 +1,5 @@
 streamlit
-pyrebase4  
-plotly.express
-face_recognition
-opencv
+pandas
+opencv-python
+face-recognition
+numpy
