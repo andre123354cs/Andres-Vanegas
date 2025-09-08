@@ -1,48 +1,67 @@
 import streamlit as st
 import pandas as pd
+import cv2
+import face_recognition
 import os
+import numpy as np
 
-# Nombre del archivo para almacenar los datos
-FILE_NAME = 'datos_contacto.csv'
+# Nombre del archivo para almacenar las codificaciones faciales
+REGISTROS_FILE = 'codificaciones_faciales.csv'
 
-# Función para guardar los datos
-def save_data(nombre, email):
-    new_data = pd.DataFrame([{'Nombre': nombre, 'Email': email}])
-    if os.path.exists(FILE_NAME):
-        existing_data = pd.read_csv(FILE_NAME)
+def save_encoding(name, encoding):
+    """Guarda el nombre y la codificación facial en un archivo CSV."""
+    # Convertir el array de numpy a una cadena de texto para guardar
+    encoding_str = ','.join(map(str, encoding))
+    new_data = pd.DataFrame([{'Nombre': name, 'Codificacion': encoding_str}])
+    
+    if os.path.exists(REGISTROS_FILE):
+        existing_data = pd.read_csv(REGISTROS_FILE)
         updated_data = pd.concat([existing_data, new_data], ignore_index=True)
     else:
         updated_data = new_data
-    updated_data.to_csv(FILE_NAME, index=False)
+    updated_data.to_csv(REGISTROS_FILE, index=False)
 
-# Título y formulario
-st.title('Formulario de Contacto')
-st.write('Ingresa tus datos para guardarlos en un archivo CSV.')
+def main_registro():
+    """Interfaz para registrar rostros."""
+    st.title('Registro de Rostros')
+    st.write('Ingresa tu nombre y el sistema capturará tu rostro para el registro.')
 
-with st.form(key='contact_form'):
-    nombre = st.text_input('Nombre')
-    email = st.text_input('Email')
-    submit_button = st.form_submit_button('Guardar Datos')
+    name = st.text_input('Nombre completo')
+    
+    if st.button('Iniciar Captura'):
+        if not name:
+            st.warning('Por favor, ingresa un nombre.')
+            return
 
-if submit_button:
-    if nombre and email:
-        save_data(nombre, email)
-        st.success('¡Datos guardados correctamente!')
-    else:
-        st.warning('Por favor, completa todos los campos.')
+        st.info('Buscando rostro... Asegúrate de estar bien iluminado y de frente a la cámara.')
+        
+        cap = cv2.VideoCapture(0) # Inicia la cámara
+        face_found = False
+        
+        while not face_found:
+            ret, frame = cap.read()
+            if not ret:
+                continue
 
-# Sección para visualizar y descargar los datos
-if os.path.exists(FILE_NAME):
-    st.subheader('Datos Almacenados')
-    df = pd.read_csv(FILE_NAME)
-    st.dataframe(df)
+            rgb_frame = frame[:, :, ::-1] # Convierte de BGR a RGB
+            face_locations = face_recognition.face_locations(rgb_frame)
 
-    # Convertir el DataFrame a un formato de cadena de texto (CSV)
-    # y crear el botón de descarga
-    csv_string = df.to_csv(index=False).encode('utf-8')
-    st.download_button(
-        label="Descargar datos en CSV",
-        data=csv_string,
-        file_name='contactos.csv',
-        mime='text/csv'
-    )
+            if face_locations:
+                st.success(f'¡Rostro de {name} detectado!')
+                face_encoding = face_recognition.face_encodings(rgb_frame, face_locations)[0]
+                save_encoding(name, face_encoding)
+                st.success('¡Registro completado! Puedes cerrar la ventana.')
+                face_found = True
+            
+            # Muestra el video en una ventana de OpenCV (no de Streamlit)
+            cv2.imshow('Registro de Rostros', frame)
+            
+            # Rompe el bucle si se presiona 'q' o se detectó el rostro
+            if cv2.waitKey(1) & 0xFF == ord('q') or face_found:
+                break
+
+        cap.release()
+        cv2.destroyAllWindows()
+
+if __name__ == "__main__":
+    main_registro()
