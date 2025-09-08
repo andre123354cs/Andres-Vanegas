@@ -1,3 +1,9 @@
 streamlit
 pyrebase4  
 plotly.express
+streamlit
+pandas
+cv2
+face_recognition
+os
+numpy
