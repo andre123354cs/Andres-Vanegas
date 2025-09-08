@@ -1,7 +1,6 @@
 streamlit
 pyrebase4  
 plotly.express
-pandas
 cv2
 face_recognition
 
