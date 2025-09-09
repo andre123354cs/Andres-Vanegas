@@ -80,9 +80,11 @@ def main():
     # Mostrar la tabla con la asistencia guardada
     if os.path.exists(ASISTENCIA_FILE):
         df_asistencia = pd.read_csv(ASISTENCIA_FILE)
-        st.dataframe(df_asistencia, use_container_width=True)
     else:
-        st.info('Aún no se ha guardado ninguna asistencia.')
+        # Si el archivo no existe, crea un DataFrame vacío para evitar errores
+        df_asistencia = pd.DataFrame(columns=['Fecha', 'Nombre', 'Presente'])
+
+    st.dataframe(df_asistencia, use_container_width=True)
 
 if __name__ == '__main__':
     main()
