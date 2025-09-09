@@ -1,67 +1,85 @@
 import streamlit as st
 import pandas as pd
-import cv2
-import face_recognition
 import os
-import numpy as np
 
-# Nombre del archivo para almacenar las codificaciones faciales
-REGISTROS_FILE = 'codificaciones_faciales.csv'
+# Nombre del archivo para almacenar los datos de los usuarios
+USUARIOS_FILE = 'usuarios.csv'
 
-def save_encoding(name, encoding):
-    """Guarda el nombre y la codificación facial en un archivo CSV."""
-    # Convertir el array de numpy a una cadena de texto para guardar
-    encoding_str = ','.join(map(str, encoding))
-    new_data = pd.DataFrame([{'Nombre': name, 'Codificacion': encoding_str}])
+# --- Funciones de la aplicación ---
+
+def save_user(name, code):
+    """Guarda el nombre y el código de acceso del usuario en un archivo CSV."""
+    new_data = pd.DataFrame([{'Nombre': name, 'Codigo': code}])
     
-    if os.path.exists(REGISTROS_FILE):
-        existing_data = pd.read_csv(REGISTROS_FILE)
+    if os.path.exists(USUARIOS_FILE):
+        existing_data = pd.read_csv(USUARIOS_FILE)
         updated_data = pd.concat([existing_data, new_data], ignore_index=True)
     else:
         updated_data = new_data
-    updated_data.to_csv(REGISTROS_FILE, index=False)
+        
+    updated_data.to_csv(USUARIOS_FILE, index=False)
+    st.success(f"Usuario '{name}' registrado exitosamente.")
 
-def main_registro():
-    """Interfaz para registrar rostros."""
-    st.title('Registro de Rostros')
-    st.write('Ingresa tu nombre y el sistema capturará tu rostro para el registro.')
-
-    name = st.text_input('Nombre completo')
+def verify_user(name, code):
+    """Verifica si el nombre y el código coinciden con un registro existente."""
+    if not os.path.exists(USUARIOS_FILE):
+        return False, "El archivo de usuarios no existe. Por favor, regístrese primero."
     
-    if st.button('Iniciar Captura'):
-        if not name:
-            st.warning('Por favor, ingresa un nombre.')
-            return
+    df = pd.read_csv(USUARIOS_FILE)
+    
+    # Intenta encontrar una fila que coincida con el nombre y el código proporcionados
+    match = df[(df['Nombre'] == name) & (df['Codigo'] == code)]
+    
+    if not match.empty:
+        return True, "¡Acceso concedido!"
+    else:
+        return False, "Nombre de usuario o código incorrectos."
 
-        st.info('Buscando rostro... Asegúrate de estar bien iluminado y de frente a la cámara.')
+def main():
+    """Lógica principal de la aplicación Streamlit."""
+    st.set_page_config(layout="wide")
+    st.title('Sistema de Acceso de Usuarios')
+    st.write('Elige una opción para registrarte o ingresar al sistema.')
+
+    # Usa un radio para alternar entre las vistas de registro y login
+    opcion = st.radio("Selecciona una acción:", ('Registrarse', 'Ingresar'), horizontal=True)
+
+    # Contenedor para la entrada de datos
+    with st.container():
+        if opcion == 'Registrarse':
+            st.subheader('Registro de Nuevo Usuario')
+            new_name = st.text_input('Ingresa tu nombre completo para registrarte:')
+            new_code = st.text_input('Crea un código de acceso:', type="password")
+
+            if st.button('Registrar'):
+                if new_name and new_code:
+                    save_user(new_name, new_code)
+                else:
+                    st.warning("Por favor, ingresa un nombre y un código.")
         
-        cap = cv2.VideoCapture(0) # Inicia la cámara
-        face_found = False
-        
-        while not face_found:
-            ret, frame = cap.read()
-            if not ret:
-                continue
-
-            rgb_frame = frame[:, :, ::-1] # Convierte de BGR a RGB
-            face_locations = face_recognition.face_locations(rgb_frame)
-
-            if face_locations:
-                st.success(f'¡Rostro de {name} detectado!')
-                face_encoding = face_recognition.face_encodings(rgb_frame, face_locations)[0]
-                save_encoding(name, face_encoding)
-                st.success('¡Registro completado! Puedes cerrar la ventana.')
-                face_found = True
+        elif opcion == 'Ingresar':
+            st.subheader('Ingresar con tu Cuenta')
+            login_name = st.text_input('Ingresa tu nombre de usuario:')
+            login_code = st.text_input('Ingresa tu código de acceso:', type="password")
             
-            # Muestra el video en una ventana de OpenCV (no de Streamlit)
-            cv2.imshow('Registro de Rostros', frame)
-            
-            # Rompe el bucle si se presiona 'q' o se detectó el rostro
-            if cv2.waitKey(1) & 0xFF == ord('q') or face_found:
-                break
+            if st.button('Verificar'):
+                if login_name and login_code:
+                    is_verified, message = verify_user(login_name, login_code)
+                    if is_verified:
+                        st.success(message)
+                    else:
+                        st.error(message)
+                else:
+                    st.warning("Por favor, ingresa tu nombre y código.")
 
-        cap.release()
-        cv2.destroyAllWindows()
+    st.markdown("---")
+    st.subheader('Usuarios Registrados')
+    # Muestra la lista de usuarios para propósitos de demostración
+    if os.path.exists(USUARIOS_FILE):
+        df_users = pd.read_csv(USUARIOS_FILE)
+        st.dataframe(df_users, use_container_width=True)
+    else:
+        st.info("Aún no hay usuarios registrados. Usa la pestaña 'Registrarse'.")
 
 if __name__ == "__main__":
-    main_registro()
+    main()
