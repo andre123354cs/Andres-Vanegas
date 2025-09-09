@@ -1,85 +1,88 @@
 import streamlit as st
 import pandas as pd
 import os
+from datetime import date
 
-# Nombre del archivo para almacenar los datos de los usuarios
-USUARIOS_FILE = 'usuarios.csv'
+# Nombre del archivo para guardar la asistencia
+ASISTENCIA_FILE = 'asistencia.csv'
 
-# --- Funciones de la aplicación ---
+# Lista de estudiantes del salón (puedes modificar esta lista)
+estudiantes = [
+    'Ana García',
+    'Juan Pérez',
+    'María López',
+    'Carlos Ruíz',
+    'Sofía Fernández',
+    'Daniel Gómez',
+    'Valentina Vargas',
+    'Manuel Castro'
+]
 
-def save_user(name, code):
-    """Guarda el nombre y el código de acceso del usuario en un archivo CSV."""
-    new_data = pd.DataFrame([{'Nombre': name, 'Codigo': code}])
+def guardar_asistencia(fecha_asistencia, registros):
+    """
+    Guarda la asistencia en un archivo CSV.
+    Si el archivo existe, añade los nuevos registros.
+    """
+    df_nuevos = pd.DataFrame(registros)
     
-    if os.path.exists(USUARIOS_FILE):
-        existing_data = pd.read_csv(USUARIOS_FILE)
-        updated_data = pd.concat([existing_data, new_data], ignore_index=True)
-    else:
-        updated_data = new_data
+    # Verifica si el archivo ya existe
+    if os.path.exists(ASISTENCIA_FILE):
+        df_existente = pd.read_csv(ASISTENCIA_FILE)
         
-    updated_data.to_csv(USUARIOS_FILE, index=False)
-    st.success(f"Usuario '{name}' registrado exitosamente.")
-
-def verify_user(name, code):
-    """Verifica si el nombre y el código coinciden con un registro existente."""
-    if not os.path.exists(USUARIOS_FILE):
-        return False, "El archivo de usuarios no existe. Por favor, regístrese primero."
-    
-    df = pd.read_csv(USUARIOS_FILE)
-    
-    # Intenta encontrar una fila que coincida con el nombre y el código proporcionados
-    match = df[(df['Nombre'] == name) & (df['Codigo'] == code)]
-    
-    if not match.empty:
-        return True, "¡Acceso concedido!"
+        # Elimina los registros antiguos para la fecha actual antes de guardar
+        df_limpio = df_existente[df_existente['Fecha'] != str(fecha_asistencia)]
+        
+        # Combina los datos existentes con los nuevos
+        df_final = pd.concat([df_limpio, df_nuevos], ignore_index=True)
     else:
-        return False, "Nombre de usuario o código incorrectos."
+        df_final = df_nuevos
+    
+    df_final.to_csv(ASISTENCIA_FILE, index=False)
 
 def main():
     """Lógica principal de la aplicación Streamlit."""
     st.set_page_config(layout="wide")
-    st.title('Sistema de Acceso de Usuarios')
-    st.write('Elige una opción para registrarte o ingresar al sistema.')
-
-    # Usa un radio para alternar entre las vistas de registro y login
-    opcion = st.radio("Selecciona una acción:", ('Registrarse', 'Ingresar'), horizontal=True)
-
-    # Contenedor para la entrada de datos
-    with st.container():
-        if opcion == 'Registrarse':
-            st.subheader('Registro de Nuevo Usuario')
-            new_name = st.text_input('Ingresa tu nombre completo para registrarte:')
-            new_code = st.text_input('Crea un código de acceso:', type="password")
-
-            if st.button('Registrar'):
-                if new_name and new_code:
-                    save_user(new_name, new_code)
-                else:
-                    st.warning("Por favor, ingresa un nombre y un código.")
-        
-        elif opcion == 'Ingresar':
-            st.subheader('Ingresar con tu Cuenta')
-            login_name = st.text_input('Ingresa tu nombre de usuario:')
-            login_code = st.text_input('Ingresa tu código de acceso:', type="password")
-            
-            if st.button('Verificar'):
-                if login_name and login_code:
-                    is_verified, message = verify_user(login_name, login_code)
-                    if is_verified:
-                        st.success(message)
-                    else:
-                        st.error(message)
-                else:
-                    st.warning("Por favor, ingresa tu nombre y código.")
-
+    st.title('📋 Registro de Asistencia del Salón')
+    st.write('Selecciona la fecha y marca la asistencia de cada estudiante. Al finalizar, haz clic en "Guardar Asistencia".')
+    
+    # Selector de fecha
+    fecha_seleccionada = st.date_input('Selecciona la fecha:', date.today())
+    
     st.markdown("---")
-    st.subheader('Usuarios Registrados')
-    # Muestra la lista de usuarios para propósitos de demostración
-    if os.path.exists(USUARIOS_FILE):
-        df_users = pd.read_csv(USUARIOS_FILE)
-        st.dataframe(df_users, use_container_width=True)
+    
+    # Crear un diccionario para almacenar el estado de los checkboxes
+    asistencia_del_dia = {}
+    st.subheader('Lista de Estudiantes')
+    
+    # Mostrar la lista de estudiantes con un checkbox para cada uno
+    for estudiante in estudiantes:
+        asistencia_del_dia[estudiante] = st.checkbox(estudiante)
+        
+    st.markdown("---")
+    
+    if st.button('✅ Guardar Asistencia'):
+        # Recolectar los datos para guardar
+        registros_a_guardar = []
+        for nombre, presente in asistencia_del_dia.items():
+            registros_a_guardar.append({
+                'Fecha': str(fecha_seleccionada),
+                'Nombre': nombre,
+                'Presente': 'Sí' if presente else 'No'
+            })
+        
+        # Llamar a la función para guardar los datos
+        guardar_asistencia(fecha_seleccionada, registros_a_guardar)
+        st.success(f'¡Asistencia guardada con éxito para el {fecha_seleccionada}!')
+    
+    st.markdown("---")
+    
+    st.subheader('📊 Historial de Asistencia')
+    # Mostrar la tabla con la asistencia guardada
+    if os.path.exists(ASISTENCIA_FILE):
+        df_asistencia = pd.read_csv(ASISTENCIA_FILE)
+        st.dataframe(df_asistencia, use_container_width=True)
     else:
-        st.info("Aún no hay usuarios registrados. Usa la pestaña 'Registrarse'.")
+        st.info('Aún no se ha guardado ninguna asistencia.')
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()
